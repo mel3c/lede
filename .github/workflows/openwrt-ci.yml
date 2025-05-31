@@ -3,24 +3,26 @@ name: OpenWrt-CI
 on:
   push:
     branches: [ 20230919 ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: '20230919'
 
 permissions:
   contents: read
 
 jobs:
-
   build_openwrt:
-
     name: Build OpenWrt Firmware
-
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-22.04
     steps:
       - name: Space cleanup and Initialization environment
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          docker rmi `docker images -q`
+          docker images -q | xargs -r docker rmi
           sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d /usr/local/lib/android
           sudo -E apt-mark hold grub-efi-amd64-signed
           sudo -E apt update
@@ -35,7 +37,7 @@ jobs:
       - name: Checkout OpenWrt
         uses: actions/checkout@v4
         with:
-          ref: 20230919
+          ref: ${{ github.event.inputs.branch || '20230919' }}
 
       - name: Update feeds
         run: |
@@ -88,17 +90,11 @@ jobs:
           cp -rf $(find ./bin/packages/ -type f -name "*.ipk") ./artifact/package/
           cp -rf $(find ./bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") ./artifact/buildinfo/
 
-      - name: Upload buildinfo
-        uses: actions/upload-artifact@v4
-        with:
-          name: OpenWrt_buildinfo
-          path: ./artifact/buildinfo/
-
-      - name: Upload package
-        uses: actions/upload-artifact@v4
-        with:
-          name: OpenWrt_package
-          path: ./artifact/package/
+      # - name: Upload package
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: OpenWrt_package
+      #     path: ./artifact/package/
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
