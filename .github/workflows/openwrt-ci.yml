@@ -41,14 +41,14 @@ jobs:
 
       - name: Update feeds
         run: |
-          sed -i "/luci/i\src-git mel3c https://github.com/mel3c/openwrt-packages" feeds.conf.default
+          #sed -i "/luci/i\src-git mel3c https://github.com/mel3c/openwrt-packages" feeds.conf.default
           sed -i '1s/coolsnowwolf\/packages/mel3c\/packages;20240825/' feeds.conf.default
-          sed -i 's/coolsnowwolf\/luci/mel3c\/luci;20241009/g' feeds.conf.default
+          sed -i 's/coolsnowwolf\/luci/mel3c\/luci;openwrt-23.05/g' feeds.conf.default
 
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-          sed -i "s/luci-theme-bootstrap/luci-theme-infinityfreedom/g" feeds/luci/collections/luci/Makefile
+          #sed -i "s/luci-theme-bootstrap/luci-theme-infinityfreedom/g" feeds/luci/collections/luci/Makefile
           sed -i 's/192.168.1.1/192.168.28.1/g' package/base-files/files/bin/config_generate
           sed -i '/uci commit system/i\uci set system.@system[0].hostname='xos'' package/lean/default-settings/files/zzz-default-settings
           sed -i "s/OpenWrt /Mel3c Build $(TZ=UTC-8 date "+%Y.%m.%d") /g" package/lean/default-settings/files/zzz-default-settings
