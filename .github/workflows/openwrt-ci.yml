@@ -7,7 +7,7 @@ on:
     inputs:
       branch:
         description: 'Branch to build'
-        required: true
+        required: false
         default: '20230919'
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
       - name: Checkout OpenWrt
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || '20230919' }}
+          ref: ${{ inputs.branch || '20230919' }}
 
       - name: Update feeds
         run: |
