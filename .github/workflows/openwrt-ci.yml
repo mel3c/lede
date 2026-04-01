@@ -58,8 +58,8 @@ jobs:
           sed -i '/TARGET_LDFLAGS += -lubox -lubus/i\TARGET_LDFLAGS += -Wl,--gc-sections -flto=jobserver -fuse-linker-plugin' package/network/services/hostapd/Makefile
 
           # update netdata v1.33.1 monitor support https
-          sed -i '/disable-https/d' feeds/packages/admin/netdata/Makefile
-          sed -i '/DEPENDS/s/$/ +libopenssl/' feeds/packages/admin/netdata/Makefile
+          # sed -i '/disable-https/d' feeds/packages/admin/netdata/Makefile
+          # sed -i '/DEPENDS/s/$/ +libopenssl/' feeds/packages/admin/netdata/Makefile
 
       - name: Generate configuration file
         run: |
